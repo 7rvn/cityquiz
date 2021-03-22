@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./App.css";
-import mapSvg from "./img/Germany_adm_location_map.svg";
+import mapSvg from "./img/germany_edited.svg";
 import jsonData from "./data/data.json";
 
 // convert json file to object
@@ -188,61 +188,74 @@ function App() {
   }
 
   return (
-    <div>
-      <div id="map">
-        <img
-          src={mapSvg}
-          alt={"Karte von Deutschland"}
-          viewBox={`0 0 ${width} ${height}`}
-          width={width}
-          height={height}
-        ></img>
-        <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height}>
-          {foundCities.map((c) => {
+    <div id="app">
+      <div id="top">
+        <h1 id="title">Deutschland</h1>
+      </div>
+      <div id="game">
+        <div id="left">
+          <div id="map">
+            <img
+              src={mapSvg}
+              alt="Karte von Deutschland"
+              viewBox={`0 0 ${width} ${height}`}
+              width={width}
+              height={height}
+            ></img>
+            <svg
+              viewBox={`0 0 ${width} ${height}`}
+              width={width}
+              height={height}
+            >
+              {foundCities.map((c) => {
+                return (
+                  <circle
+                    cx={c.x * width}
+                    cy={c.y * height}
+                    r={c.p / 150000 < 3 ? 3 : c.p / 150000}
+                    fill="#bbe1fa"
+                    key={c.x + c.y}
+                  ></circle>
+                );
+              })}
+            </svg>
+          </div>
+
+          <form id="game-form">
+            <label htmlFor="city-input">Stadt: </label>
+            <input
+              value={inputState}
+              onChange={handleInput}
+              id="city-input"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck="false"
+            ></input>
+          </form>
+        </div>
+
+        <div id="left">
+          <div id="population-counter">
+            total: {stats.populationFound}{" "}
+            {((stats.populationFound / stats.population) * 100).toFixed(2)}%
+          </div>
+          <div id="found-top-100">top100: {stats.top100}/100</div>
+          {Object.entries(stats.states).map((s) => {
+            const [key, value] = s;
             return (
-              <circle
-                cx={c.x * width}
-                cy={c.y * height}
-                r={c.p / 150000 < 3 ? 3 : c.p / 150000}
-                fill="lightskyblue"
-                key={c.x + c.y}
-              ></circle>
+              <div key={key} className="states">
+                {value.name}: {value.citiesFound}/{value.cities}{" "}
+                {value.populationFound}/{value.population}
+              </div>
             );
           })}
-        </svg>
-      </div>
-      <div>
-        <form>
-          <label htmlFor="city-input">Stadt: </label>
-          <input
-            value={inputState}
-            onChange={handleInput}
-            id="city-input"
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck="false"
-          ></input>
-        </form>
-      </div>
-      <div id={"population-counter"}>
-        total: {stats.populationFound}{" "}
-        {((stats.populationFound / stats.population) * 100).toFixed(2)}%
-      </div>
-      <div id={"found-top-100"}>top100: {stats.top100}/100</div>
-      {Object.entries(stats.states).map((s) => {
-        const [key, value] = s;
-        return (
-          <div key={key} className={"states"}>
-            {value.name}: {value.citiesFound}/{value.cities}{" "}
-            {value.populationFound}/{value.population}
+          <div id="found-cities">
+            {foundCities.map((x) => {
+              return <div key={x.x + x.y}>{x.name}</div>;
+            })}
           </div>
-        );
-      })}
-      <div id={"found-cities"}>
-        {foundCities.map((x) => {
-          return <div key={x.x + x.y}>{x.name}</div>;
-        })}
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,32 @@
+body {
+  background-color: #1b262c;
+  color: white;
+}
+
 input {
   outline: none;
 }
 
+#app {
+  display: flex;
+  flex-direction: column;
+}
+
+#game {
+  display: flex;
+  justify-content: center;
+}
+
 #map {
-  width: auto;
+  width: 536px;
   height: 635px;
+  position: relative;
 }
 
 #map > * {
   position: absolute;
+}
+
+#title {
+  text-align: center;
 }
