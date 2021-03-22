@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./App.css";
-import mapSvg from "./img/germany_edited.svg";
+import mapSvg from "./img/germany.svg";
 import jsonData from "./data/data.json";
 
 // convert json file to object
@@ -157,7 +157,7 @@ function App() {
       if (!result.found) {
         setFoundCities([
           {
-            name: input,
+            name: result.name,
             x: (result.long - longstart) / (longend - longstart),
             y: (result.lat - latstart) / (latend - latstart),
             p: result.population,
@@ -190,10 +190,10 @@ function App() {
   return (
     <div id="app">
       <div id="top">
-        <h1 id="title">Deutschland</h1>
+        <h1 id="title">Städte in Deutschland</h1>
       </div>
       <div id="game">
-        <div id="left">
+        <div className="flex-column align-center">
           <div id="map">
             <img
               src={mapSvg}
@@ -206,6 +206,7 @@ function App() {
               viewBox={`0 0 ${width} ${height}`}
               width={width}
               height={height}
+              id="circles"
             >
               {foundCities.map((c) => {
                 return (
@@ -213,7 +214,6 @@ function App() {
                     cx={c.x * width}
                     cy={c.y * height}
                     r={c.p / 150000 < 3 ? 3 : c.p / 150000}
-                    fill="#bbe1fa"
                     key={c.x + c.y}
                   ></circle>
                 );
@@ -222,7 +222,7 @@ function App() {
           </div>
 
           <form id="game-form">
-            <label htmlFor="city-input">Stadt: </label>
+            <label htmlFor="city-input"></label>
             <input
               value={inputState}
               onChange={handleInput}
@@ -231,27 +231,38 @@ function App() {
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck="false"
+              placeholder="Stadt in Deutschland"
             ></input>
           </form>
         </div>
 
-        <div id="left">
+        <div className="flex-column">
+          <h2>Gefunden</h2>
           <div id="population-counter">
-            total: {stats.populationFound}{" "}
+            Einwohner:{" "}
+            {stats.populationFound
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+          </div>
+          <div id="population-counter-percentage">
+            Gesamte Bevölkerung{" "}
             {((stats.populationFound / stats.population) * 100).toFixed(2)}%
           </div>
-          <div id="found-top-100">top100: {stats.top100}/100</div>
+          <div id="found-top-100">100 größte Städte: {stats.top100}</div>
+          <div id="total-cities">Städte insgesamt: {foundCities.length}</div>
+          <h2>Bundesländer</h2>
           {Object.entries(stats.states).map((s) => {
             const [key, value] = s;
             return (
               <div key={key} className="states">
-                {value.name}: {value.citiesFound}/{value.cities}{" "}
-                {value.populationFound}/{value.population}
+                {value.name}:{" "}
+                {((value.populationFound / value.population) * 100).toFixed(1)}%
               </div>
             );
           })}
+          <h2>Gefundene Städte</h2>
           <div id="found-cities">
-            {foundCities.map((x) => {
+            {foundCities.reverse().map((x) => {
               return <div key={x.x + x.y}>{x.name}</div>;
             })}
           </div>
