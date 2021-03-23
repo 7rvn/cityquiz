@@ -122,7 +122,7 @@ function App() {
   return (
     <div id="app">
       <div id="top">
-        <h1 id="title">Städte in Deutschland</h1>
+        <h1 id="title">Bevölkerung in Deutschland</h1>
       </div>
       <div id="game">
         <div className="flex-column align-center">
@@ -153,6 +153,7 @@ function App() {
               autoCapitalize="off"
               spellCheck="false"
               placeholder="Stadt in Deutschland"
+              autoFocus={true}
             ></input>
           </form>
           <button id="restart-button" onClick={restartGame}>
@@ -163,24 +164,29 @@ function App() {
         <div className="flex-column">
           <h2>Gefunden</h2>
           <div id="population-counter">
-            Einwohner:{" "}
-            {stats.populationFound
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+            {"Bevölkerung: " +
+              stats.populationFound
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
           </div>
           <div id="population-counter-percentage">
-            Gesamte Bevölkerung{" "}
-            {((stats.populationFound / stats.population) * 100).toFixed(2)}%
+            {"Gesamte Bevölkerung: " +
+              ((stats.populationFound / stats.population) * 100).toFixed(2) +
+              "%"}
           </div>
+          <div id="total-cities">Städte: {foundCities.length}</div>
           <div id="found-top-100">100 größte Städte: {stats.top100}</div>
-          <div id="total-cities">Städte insgesamt: {foundCities.length}</div>
           <h2>Bundesländer</h2>
           {Object.entries(stats.states).map((s) => {
             const [key, value] = s;
             return (
               <div key={key} className="states">
-                {value.name}:{" "}
-                {((value.populationFound / value.population) * 100).toFixed(1)}%
+                {value.name +
+                  ": " +
+                  ((value.populationFound / value.population) * 100).toFixed(
+                    1
+                  ) +
+                  "%"}
               </div>
             );
           })}
