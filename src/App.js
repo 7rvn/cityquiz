@@ -154,6 +154,7 @@ function App() {
               spellCheck="false"
               placeholder="Stadt in Deutschland"
               autoFocus={true}
+              name="safarisearch"
             ></input>
           </form>
           <button id="restart-button" onClick={restartGame}>
@@ -161,7 +162,7 @@ function App() {
           </button>
         </div>
 
-        <div className="flex-column">
+        <div className="flex-column stats">
           <h2>Gefunden</h2>
           <div id="population-counter">
             {"Bevölkerung: " +

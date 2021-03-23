@@ -106,3 +106,31 @@ input {
   height: 60vh;
   width: auto;
 }
+
+@media only screen and (max-width: 768px) {
+  #top {
+    height: auto;
+  }
+
+  #title {
+    font-size: 2em;
+    margin: 0.5em 0;
+  }
+
+  #game {
+    display: block;
+  }
+
+  h1 {
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .flex-column {
+    margin: 0;
+  }
+
+  .stats {
+    text-align: center;
+  }
+}
