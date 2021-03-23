@@ -63,6 +63,17 @@ function App() {
 
   const [stats, setStats] = React.useState(defaultStats);
 
+  function restartGame() {
+    window.localStorage.clear();
+    setCities(defaultCities);
+    setStats(defaultStats);
+    setFoundCities(defaultFoundCities);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+  }
+
   function handleInput(e) {
     setInputState(e.target.value);
 
@@ -92,7 +103,6 @@ function App() {
               populationFound:
                 (stats.states[result.state].populationFound || 0) +
                 result.population,
-              citiesFound: stats.states[result.state].citiesFound + 1,
             },
           },
         });
@@ -143,7 +153,7 @@ function App() {
             </svg>
           </div>
 
-          <form id="game-form">
+          <form id="game-form" onSubmit={handleSubmit}>
             <label htmlFor="city-input"></label>
             <input
               value={inputState}
@@ -156,6 +166,9 @@ function App() {
               placeholder="Stadt in Deutschland"
             ></input>
           </form>
+          <button id="restart-button" onClick={restartGame}>
+            Karte Zurücksetzen
+          </button>
         </div>
 
         <div className="flex-column">
@@ -184,7 +197,7 @@ function App() {
           })}
           <h2>Gefundene Städte</h2>
           <div id="found-cities">
-            {foundCities.reverse().map((x) => {
+            {foundCities.map((x) => {
               return <div key={x.x + x.y}>{x.name}</div>;
             })}
           </div>
