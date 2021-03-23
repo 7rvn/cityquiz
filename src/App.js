@@ -6,130 +6,151 @@ import jsonData from "./data/data.json";
 
 // convert json file to object
 function defaultCities() {
-  var out = {};
-  jsonData.forEach((e) => (out[e.name.toLowerCase()] = e));
-  return out;
+  const localStorageValue = window.localStorage.getItem("cities");
+  if (localStorageValue) {
+    return JSON.parse(localStorageValue);
+  } else {
+    var out = {};
+    jsonData.forEach((e) => (out[e.name.toLowerCase()] = e));
+    return out;
+  }
 }
 
-const defaultStats = {
-  top100: 0,
-  populationFound: 0,
-  population: 83166711,
-  states: {
-    "01": {
-      name: "Schleswig-Holstein",
-      population: 2903773,
-      cities: 1106,
+function defaultStats() {
+  const localStorageValue = window.localStorage.getItem("stats");
+  if (localStorageValue) {
+    return JSON.parse(localStorageValue);
+  } else {
+    return {
+      top100: 0,
       populationFound: 0,
-      citiesFound: 0,
-    },
-    "02": {
-      name: "Hamburg",
-      population: 1847253,
-      cities: 1,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    "03": {
-      name: "Niedersachsen",
-      population: 7993608,
-      cities: 944,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    "04": {
-      name: "Bremen",
-      population: 681202,
-      cities: 2,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    "05": {
-      name: "Nordrhein-Westfalen",
-      population: 17947221,
-      cities: 396,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    "06": {
-      name: "Hessen",
-      population: 6288080,
-      cities: 422,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    "07": {
-      name: "Rheinland-Pfalz",
-      population: 4093903,
-      cities: 2301,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    "08": {
-      name: "Baden-Württemberg",
-      population: 11100394,
-      cities: 1101,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    "09": {
-      name: "Bayern",
-      population: 13124737,
-      cities: 2056,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    10: {
-      name: "Saarland",
-      population: 986887,
-      cities: 52,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    11: {
-      name: "Berlin",
-      population: 3669491,
-      cities: 1,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    12: {
-      name: "Brandenburg",
-      population: 2521893,
-      cities: 416,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    13: {
-      name: "Mecklenburg-Vorpommern",
-      population: 1608138,
-      cities: 726,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    14: {
-      name: "Sachsen",
-      population: 4071971,
-      cities: 419,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    15: {
-      name: "Sachsen-Anhalt",
-      population: 2194782,
-      cities: 218,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-    16: {
-      name: "Thüringen",
-      population: 2133378,
-      cities: 631,
-      populationFound: 0,
-      citiesFound: 0,
-    },
-  },
-};
+      population: 83166711,
+      states: {
+        "01": {
+          name: "Schleswig-Holstein",
+          population: 2903773,
+          cities: 1106,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        "02": {
+          name: "Hamburg",
+          population: 1847253,
+          cities: 1,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        "03": {
+          name: "Niedersachsen",
+          population: 7993608,
+          cities: 944,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        "04": {
+          name: "Bremen",
+          population: 681202,
+          cities: 2,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        "05": {
+          name: "Nordrhein-Westfalen",
+          population: 17947221,
+          cities: 396,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        "06": {
+          name: "Hessen",
+          population: 6288080,
+          cities: 422,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        "07": {
+          name: "Rheinland-Pfalz",
+          population: 4093903,
+          cities: 2301,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        "08": {
+          name: "Baden-Württemberg",
+          population: 11100394,
+          cities: 1101,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        "09": {
+          name: "Bayern",
+          population: 13124737,
+          cities: 2056,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        10: {
+          name: "Saarland",
+          population: 986887,
+          cities: 52,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        11: {
+          name: "Berlin",
+          population: 3669491,
+          cities: 1,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        12: {
+          name: "Brandenburg",
+          population: 2521893,
+          cities: 416,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        13: {
+          name: "Mecklenburg-Vorpommern",
+          population: 1608138,
+          cities: 726,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        14: {
+          name: "Sachsen",
+          population: 4071971,
+          cities: 419,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        15: {
+          name: "Sachsen-Anhalt",
+          population: 2194782,
+          cities: 218,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+        16: {
+          name: "Thüringen",
+          population: 2133378,
+          cities: 631,
+          populationFound: 0,
+          citiesFound: 0,
+        },
+      },
+    };
+  }
+}
+
+function defaultFoundCities() {
+  const localStorageValue = window.localStorage.getItem("foundCities");
+  if (localStorageValue) {
+    return JSON.parse(localStorageValue);
+  } else {
+    return [];
+  }
+}
 
 // map borders
 const longstart = 5.5;
@@ -143,7 +164,7 @@ const height = 635;
 
 function App() {
   const [cities, setCities] = React.useState(defaultCities);
-  const [foundCities, setFoundCities] = React.useState([]);
+  const [foundCities, setFoundCities] = React.useState(defaultFoundCities);
   const [inputState, setInputState] = React.useState("");
 
   const [stats, setStats] = React.useState(defaultStats);
@@ -186,6 +207,12 @@ function App() {
       }
     }
   }
+
+  React.useEffect(() => {
+    window.localStorage.setItem("cities", JSON.stringify(cities));
+    window.localStorage.setItem("foundCities", JSON.stringify(foundCities));
+    window.localStorage.setItem("stats", JSON.stringify(stats));
+  }, [cities, foundCities, stats]);
 
   return (
     <div id="app">
