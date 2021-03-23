@@ -43,9 +43,8 @@ input {
 }
 
 #map {
-  width: 536px;
-  height: 635px;
   position: relative;
+  height: 60vh;
 }
 
 #map > * {
@@ -100,4 +99,10 @@ input {
 
 #restart-button:hover {
   border-color: var(--accent-lightest);
+}
+
+#map-img,
+#circles {
+  height: 60vh;
+  width: auto;
 }

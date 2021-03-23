@@ -126,20 +126,9 @@ function App() {
       </div>
       <div id="game">
         <div className="flex-column align-center">
-          <div id="map">
-            <img
-              src={mapSvg}
-              alt="Karte von Deutschland"
-              viewBox={`0 0 ${width} ${height}`}
-              width={width}
-              height={height}
-            ></img>
-            <svg
-              viewBox={`0 0 ${width} ${height}`}
-              width={width}
-              height={height}
-              id="circles"
-            >
+          <div id="map" style={{ width: `calc(60vh * (${width}/${height}))` }}>
+            <img src={mapSvg} alt="Karte von Deutschland" id="map-img"></img>
+            <svg viewBox={`0 0 ${width} ${height}`} id="circles">
               {foundCities.map((c) => {
                 return (
                   <circle
