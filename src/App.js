@@ -128,15 +128,24 @@ function App() {
         <div className="flex-column align-center">
           <div id="map" style={{ width: `calc(60vh * (${width}/${height}))` }}>
             <img src={mapSvg} alt="Karte von Deutschland" id="map-img"></img>
-            <svg viewBox={`0 0 ${width} ${height}`} id="circles">
+            <svg viewBox={`0 0 ${width + 200} ${height}`} id="circles">
               {foundCities.map((c) => {
                 return (
-                  <circle
-                    cx={c.x * width}
-                    cy={c.y * height}
-                    r={c.p / 150000 < 3 ? 3 : c.p / 150000}
-                    key={c.x + c.y}
-                  ></circle>
+                  <g>
+                    <circle
+                      cx={c.x * width}
+                      cy={c.y * height}
+                      r={c.p / 150000 < 3 ? 3 : c.p / 150000}
+                      key={c.x + c.y}
+                    ></circle>
+                    <foreignObject
+                      className="hovertag"
+                      x={c.x * width}
+                      y={c.y * height}
+                    >
+                      <text className="hovertext">{c.name}</text>
+                    </foreignObject>
+                  </g>
                 );
               })}
             </svg>
