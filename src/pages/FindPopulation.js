@@ -2,6 +2,8 @@ import React from "react";
 
 import { useParams } from "react-router-dom";
 
+import axios from "axios";
+
 import "../App.css";
 import mapSvg from "../img/germany.svg";
 import jsonData from "../data/data.json";
@@ -59,8 +61,26 @@ const width = 536;
 const height = 635;
 
 function FindPopulation() {
-  let country = useParams();
-  console.log(country);
+  let routerParams = useParams();
+  const [fetched, setFetched] = React.useState();
+
+  React.useEffect(() => {
+    axios.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        if (error.response.status === 400) {
+          window.location.href = "/404";
+          return;
+        }
+      }
+    );
+    axios.get("/api/countries/" + routerParams.country).then((res) => {
+      setFetched(res.data);
+    });
+  }, [routerParams]);
+
   const [cities, setCities] = React.useState(defaultCities);
   const [foundCities, setFoundCities] = React.useState(defaultFoundCities);
   const [inputState, setInputState] = React.useState("");
