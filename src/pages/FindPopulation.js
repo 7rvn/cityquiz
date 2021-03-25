@@ -1,26 +1,19 @@
 import React from "react";
-
 import { useParams } from "react-router-dom";
-
 import axios from "axios";
 
 import "../App.css";
-import mapSvg from "../img/germany.svg";
-import jsonData from "../data/data.json";
 
-// convert json file to object
-function defaultCities() {
-  const localStorageValue = window.localStorage.getItem("cities");
+function defaultFoundCities() {
+  const localStorageValue = window.localStorage.getItem("foundCities");
   if (localStorageValue) {
     return JSON.parse(localStorageValue);
   } else {
-    var out = {};
-    jsonData["cities"].forEach((e) => (out[e.name.toLowerCase()] = e));
-    return out;
+    return [];
   }
 }
 
-function defaultStats() {
+function defaultStats(states) {
   const localStorageValue = window.localStorage.getItem("stats");
   if (localStorageValue) {
     return JSON.parse(localStorageValue);
@@ -32,7 +25,7 @@ function defaultStats() {
       states: {},
     };
 
-    Object.entries(jsonData["states"][0]).forEach((e) => {
+    Object.entries(states).forEach((e) => {
       const id = e[0];
       const values = e[1];
       out.states[id] = { ...values, populationFound: 0 };
@@ -41,28 +34,20 @@ function defaultStats() {
   }
 }
 
-function defaultFoundCities() {
-  const localStorageValue = window.localStorage.getItem("foundCities");
-  if (localStorageValue) {
-    return JSON.parse(localStorageValue);
-  } else {
-    return [];
-  }
-}
-
-// map borders
-const longstart = 5.5;
-const longend = 15.5;
-const latstart = 55.1;
-const latend = 47.2;
-
-// width settings
-const width = 536;
-const height = 635;
-
 function FindPopulation() {
-  let routerParams = useParams();
-  const [fetched, setFetched] = React.useState();
+  const routerParams = useParams();
+  const [isLoading, setLoading] = React.useState(true);
+
+  const [fetchedData, setFetchedData] = React.useState();
+
+  const [foundCities, setFoundCities] = React.useState(defaultFoundCities);
+  const [stats, setStats] = React.useState();
+
+  const [inputState, setInputState] = React.useState("");
+
+  // width settings
+  const width = fetchedData ? fetchedData.map.width : 100;
+  const height = fetchedData ? fetchedData.map.height : 100;
 
   React.useEffect(() => {
     axios.interceptors.response.use(
@@ -76,21 +61,35 @@ function FindPopulation() {
         }
       }
     );
+
     axios.get("/api/countries/" + routerParams.country).then((res) => {
-      setFetched(res.data);
+      let cities = {};
+      res.data["cities"].forEach((e) => (cities[e.name.toLowerCase()] = e));
+
+      setFetchedData({
+        cities: cities,
+        states: res.data["states"][0],
+        map: res.data.map,
+      });
+      setStats(defaultStats(res.data["states"][0]));
+      setLoading(false);
     });
   }, [routerParams]);
 
-  const [cities, setCities] = React.useState(defaultCities);
-  const [foundCities, setFoundCities] = React.useState(defaultFoundCities);
-  const [inputState, setInputState] = React.useState("");
+  React.useEffect(() => {
+    window.localStorage.setItem("foundCities", JSON.stringify(foundCities));
+    if (stats) {
+      window.localStorage.setItem("stats", JSON.stringify(stats));
+    }
+  }, [foundCities, stats]);
 
-  const [stats, setStats] = React.useState(defaultStats);
+  if (isLoading) {
+    return <h1>Loading...</h1>;
+  }
 
   function restartGame() {
     window.localStorage.clear();
-    setCities(defaultCities);
-    setStats(defaultStats);
+    setStats(defaultStats(fetchedData.states));
     setFoundCities(defaultFoundCities);
   }
 
@@ -102,19 +101,28 @@ function FindPopulation() {
     setInputState(e.target.value);
 
     const input = e.target.value.toLowerCase();
-    const result = cities[input];
+    const result = fetchedData.cities[input];
+
     if (result) {
-      if (!result.found) {
+      const matches = (c) => c.name === result.name;
+      const match = foundCities.some(matches);
+      if (!match) {
         setFoundCities([
           {
             name: result.name,
-            x: (result.long - longstart) / (longend - longstart),
-            y: (result.lat - latstart) / (latend - latstart),
+            x:
+              (result.long - fetchedData.map.longstart) /
+              (fetchedData.map.longend - fetchedData.map.longstart),
+            y:
+              (result.lat - fetchedData.map.latstart) /
+              (fetchedData.map.latend - fetchedData.map.latstart),
             p: result.population,
           },
           ...foundCities,
         ]);
-        const isTop100 = Object.keys(cities).slice(0, 100).includes(input);
+        const isTop100 = Object.keys(fetchedData.cities)
+          .slice(0, 100)
+          .includes(input);
 
         setStats({
           ...stats,
@@ -131,17 +139,10 @@ function FindPopulation() {
           },
         });
 
-        setCities({ ...cities, [input]: { ...cities[input], found: true } });
         setInputState("");
       }
     }
   }
-
-  React.useEffect(() => {
-    window.localStorage.setItem("cities", JSON.stringify(cities));
-    window.localStorage.setItem("foundCities", JSON.stringify(foundCities));
-    window.localStorage.setItem("stats", JSON.stringify(stats));
-  }, [cities, foundCities, stats]);
 
   return (
     <div id="app">
@@ -151,7 +152,11 @@ function FindPopulation() {
       <div id="game">
         <div className="flex-column align-center">
           <div id="map" style={{ width: `calc(60vh * (${width}/${height}))` }}>
-            <img src={mapSvg} alt="Karte von Deutschland" id="map-img"></img>
+            <img
+              src={"/maps/countries/" + fetchedData.map.src}
+              alt="Karte von Deutschland"
+              id="map-img"
+            ></img>
             <svg viewBox={`0 0 ${width + 200} ${height}`} id="circles">
               {foundCities.map((c) => {
                 return (
